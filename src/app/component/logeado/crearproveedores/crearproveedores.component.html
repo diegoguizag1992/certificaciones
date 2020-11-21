@@ -1,0 +1,365 @@
+
+
+
+  <!--
+  <div class=" colum col-sm-2">
+    <div class="container">
+      <mat-card class="card"  style="height: 200px;">
+        <button mat-button [matMenuTriggerFor]="animals">Administración</button>
+        <mat-menu #animals="matMenu">
+          <button mat-menu-item [matMenuTriggerFor]="vertebrates">Vertebrates</button>
+          <button mat-menu-item [matMenuTriggerFor]="invertebrates">Invertebrates</button>
+        </mat-menu>
+
+        <mat-menu #vertebrates="matMenu">
+          <button mat-menu-item [matMenuTriggerFor]="fish">Fishes</button>
+          <button mat-menu-item [matMenuTriggerFor]="amphibians">Amphibians</button>
+          <button mat-menu-item [matMenuTriggerFor]="reptiles">Reptiles</button>
+          <button mat-menu-item>Birds</button>
+          <button mat-menu-item>Mammals</button>
+        </mat-menu>
+
+        <mat-menu #invertebrates="matMenu">
+          <button mat-menu-item>Insects</button>
+          <button mat-menu-item>Molluscs</button>
+          <button mat-menu-item>Crustaceans</button>
+          <button mat-menu-item>Corals</button>
+          <button mat-menu-item>Arachnids</button>
+          <button mat-menu-item>Velvet worms</button>
+          <button mat-menu-item>Horseshoe crabs</button>
+        </mat-menu>
+
+        <mat-menu #fish="matMenu">
+          <button mat-menu-item>Baikal oilfish</button>
+          <button mat-menu-item>Bala shark</button>
+          <button mat-menu-item>Ballan wrasse</button>
+          <button mat-menu-item>Bamboo shark</button>
+          <button mat-menu-item>Banded killifish</button>
+        </mat-menu>
+
+        <mat-menu #amphibians="matMenu">
+          <button mat-menu-item>Sonoran desert toad</button>
+          <button mat-menu-item>Western toad</button>
+          <button mat-menu-item>Arroyo toad</button>
+          <button mat-menu-item>Yosemite toad</button>
+        </mat-menu>
+
+        <mat-menu #reptiles="matMenu">
+          <button mat-menu-item>Banded Day Gecko</button>
+          <button mat-menu-item>Banded Gila Monster</button>
+          <button mat-menu-item>Black Tree Monitor</button>
+          <button mat-menu-item>Blue Spiny Lizard</button>
+          <button mat-menu-item disabled>Velociraptor</button>
+        </mat-menu>
+      </mat-card>
+    </div>
+  </div>  -->
+  <div class="colum">
+
+    <div class="container mt-5">
+      <mat-card class="card container col-8 col-sm-8 ">
+        <form
+        novalidate
+        (ngSubmit)="onSubmit()"
+        [formGroup]="naturalPerson"
+        #myform="ngForm"
+        autocomplete="off"
+      >
+        <div class="d-flex justify-content-center">
+          <h2>Crear Tercero</h2>
+        </div>
+        <div class="row container d-flex justify-content-around mt-4">
+          <div class="colum col-6 col-sm-6">
+            <div>
+              <mat-form-field class="w-100">
+                <mat-select [(value)]="selected" placeholder="Tipo de tercero" (selectionChange)="select(selected)">
+                  <mat-option value="1">Persona Natural</mat-option>
+                  <mat-option value="Persona Juridica">Persona Jurídica</mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+            <div *ngIf="form_fsfb">
+              <mat-form-field class="w-100">
+                <input matInput placeholder="Apellidos" type="text" formControlName="userProviderLastname"/>
+                <mat-error *ngIf="naturalPerson.get('userProviderLastname').hasError('required')">
+                  Este campo es obligatorio.
+                </mat-error>
+                <mat-error *ngIf="naturalPerson.get('userProviderLastname').hasError('pattern')">
+                  El apellido no puede llevar números.
+                </mat-error>
+                <mat-error *ngIf="naturalPerson.get('userProviderLastname').hasError('minlength')">
+                  La longitud del texto excede el mínimo permitido.
+                </mat-error>
+              </mat-form-field>
+            </div>
+
+            <div class="mt-2" *ngIf="form_fsfb">
+            <mat-form-field class="w-100">
+              <mat-label>Tipo de documento</mat-label>
+              <mat-select formControlName="accountinguserId" [(value)]="document" (selectionChange)="selectDocument(document)">
+                <mat-option disabled value="Seleccione">
+                  Seleccione un tipo de documento
+                </mat-option>
+                <mat-option value="Cedula ciudadania">
+                  Cédula de ciudadanía
+                </mat-option>
+                <mat-option value="Cédula extranjería">
+                  Cédula de extranjería
+                </mat-option>
+                <mat-option value="Pasaporte">
+                  Pasaporte
+                </mat-option>
+                <mat-option value="Otro">
+                  Otro (cual)
+                </mat-option>
+              </mat-select>
+              <mat-error *ngIf="naturalPerson.get('accountinguserId').hasError('required') ">
+                Este campo es obligatorio.
+              </mat-error>
+            </mat-form-field>
+            </div>
+
+            <div *ngIf="form_fsfb" class="mt-1" >
+              <mat-form-field class="w-100">
+                <mat-label>Tipo de proveedor</mat-label>
+                <mat-select formControlName="userproviderType">
+                  <mat-option disabled value="Seleccione">
+                    Seleccione un tipo de proveedor
+                  </mat-option>
+                  <mat-option value="Medico">
+                    Médico
+                  </mat-option>
+                  <mat-option value="Proveedor">
+                    Proveedor
+                  </mat-option>
+                </mat-select>
+                <mat-error *ngIf="naturalPerson.get('userproviderType').hasError('required') ">
+                  Este campo es obligatorio.
+                </mat-error>
+              </mat-form-field>
+            </div>
+          </div>
+          <div class="colum  col-6 col-sm-6">
+            <div *ngIf="form_fsfb">
+            <div class="">
+              <mat-form-field class="w-100">
+                <input matInput placeholder="Nombres"  type="text" formControlName="userProviderName"/>
+                <mat-error *ngIf="naturalPerson.get('userProviderName').hasError('required')">
+                  Este campo es obligatorio.
+                </mat-error>
+                <mat-error *ngIf="naturalPerson.get('userProviderName').hasError('pattern')">
+                  El nombre no puede llevar números.
+                </mat-error>
+                <mat-error *ngIf="naturalPerson.get('userProviderName').hasError('minlength')">
+                  La longitud del texto excede el mínimo permitido.
+                </mat-error>
+              </mat-form-field>
+            </div>
+
+            <div class="">
+              <mat-form-field class="w-100">
+                <input matInput placeholder="Correo jefe aprobador" type="text" formControlName="userProviderEmailApprover"/>
+                <mat-error *ngIf="naturalPerson.get('userProviderEmailApprover').hasError('required')">
+                  Este campo es obligatorio.
+                </mat-error>
+                <mat-error *ngIf="naturalPerson.get('userProviderEmailApprover').hasError('pattern')">
+                  Ingrese un correo valido.
+                </mat-error>
+              </mat-form-field>
+            </div>
+
+            <div  class="mt-2">
+              <mat-form-field class="w-100">
+                <input matInput placeholder="{{somePlaceholder}}" type="text" formControlName="userProviderNit"/>
+                <mat-error *ngIf="naturalPerson.get('userProviderNit').hasError('required')">
+                  Este campo es obligatorio.
+                </mat-error>
+                <mat-error *ngIf="naturalPerson.get('userProviderNit').hasError('minlength')">
+                  La longitud del texto excede el mínimo permitido.
+                </mat-error>
+                <mat-error *ngIf="naturalPerson.get('userProviderNit').hasError('maxlength')">
+                  Este campo solo acepta maximo 10 caracteres
+               </mat-error>
+                <mat-error *ngIf="naturalPerson.get('userProviderNit').hasError('pattern')">
+                El documento no puede contener letras.
+                </mat-error>
+              </mat-form-field>
+            </div>
+
+            <div class="mt-2">
+              <mat-form-field class="w-100">
+                <input matInput placeholder="Correo" type="text" formControlName="userProviderEmail"/>
+                <mat-error *ngIf="naturalPerson.get('userProviderEmail').hasError('required')">
+                  Este campo es obligatorio
+                </mat-error>
+                <mat-error *ngIf="naturalPerson.get('userProviderEmail').hasError('pattern')">
+                  Ingrese un correo valido.
+                </mat-error>
+              </mat-form-field>
+            </div>
+
+            <div class="mt-2">
+              <mat-form-field class="w-100">
+                <input matInput placeholder="Correo" type="text" formControlName="userProviderDateCreated"/>
+                <mat-error *ngIf="naturalPerson.get('userProviderDateCreated').hasError('required')">
+                  Este campo es obligatorio
+                </mat-error>
+                <mat-error *ngIf="naturalPerson.get('userProviderDateCreated').hasError('pattern')">
+                  Ingrese un correo valido.
+                </mat-error>
+              </mat-form-field>
+            </div>
+
+            <div class="mt-2">
+              <mat-form-field class="w-100">
+                <input matInput placeholder="Correo" type="text" formControlName="userProviderNameCompany"/>
+                <mat-error *ngIf="naturalPerson.get('userProviderNameCompany').hasError('required')">
+                  Este campo es obligatorio
+                </mat-error>
+                <mat-error *ngIf="naturalPerson.get('userProviderNameCompany').hasError('pattern')">
+                  Ingrese un correo valido.
+                </mat-error>
+              </mat-form-field>
+            </div>
+
+
+            <br>
+            <div class="mt-5">
+
+              <div class="d-flex justify-content-end">
+                <button mat-raised-button class="buttonCA-second mat-raised-button" type="button" (click)="close()">CANCELAR</button>
+                <button mat-raised-button class="buttonCA primary" type="submit">GUARDAR</button>
+
+              </div>
+            </div>
+            </div>
+          </div>
+        </div>
+        <br>
+      </form>
+      <form novalidate (ngSubmit)="onSubmitLegalPerson()" [formGroup]="legalPerson" #myform="ngForm" autocomplete="off" style="margin: -20px 0 0 0;">
+      <div  *ngIf="legalPersonform" class="">
+        <div class="row container">
+          <div class="colum col-6 col-sm-6">
+            <div class="mt-2">
+              <mat-form-field class="w-100">
+                <input matInput placeholder="Razón social"  type="text" formControlName="razonSocial"/>
+                <mat-error *ngIf="legalPerson.get('razonSocial').hasError('required')">
+                  Este campo es obligatorio.
+                </mat-error>
+                <mat-error *ngIf="legalPerson.get('razonSocial').hasError('pattern')">
+                  El nombre no puede llevar números.
+                </mat-error>
+                <mat-error *ngIf="legalPerson.get('razonSocial').hasError('minlength')">
+                  La longitud del texto excede el mínimo permitido.
+                </mat-error>
+              </mat-form-field>
+            </div>
+          </div>
+          <div class="colum col-6 col-sm-6">
+            <div class="mt-2">
+              <mat-form-field class="w-100">
+                <input matInput placeholder="Correo jefe aprobador" type="text" formControlName="correoAprobador"/>
+                <mat-error *ngIf="legalPerson.get('correoAprobador').hasError('required')">
+                  Este campo es obligatorio.
+                </mat-error>
+                <mat-error *ngIf="legalPerson.get('correoAprobador').hasError('pattern')">
+                  Ingrese un correo valido.
+                </mat-error>
+              </mat-form-field>
+            </div>
+          </div>
+          <div class="colum col-6 col-sm-6">
+            <div class="mt-2">
+              <mat-form-field class="w-100">
+                <mat-label>Tipo de documento</mat-label>
+                <mat-select formControlName="tipoDocumento" [(value)]="document" (selectionChange)="selectDocument(document)">
+                  <mat-option disabled value="Seleccione">
+                    Seleccione un tipo de documento
+                  </mat-option>
+                  <mat-option value="Nit">
+                    Nit
+                  </mat-option>
+                  <mat-option value="Otro">
+                    Otro (cual)
+                  </mat-option>
+                </mat-select>
+                <mat-error *ngIf="legalPerson.get('tipoDocumento').hasError('required') ">
+                  Este campo es obligatorio.
+                </mat-error>
+              </mat-form-field>
+              </div>
+          </div>
+          <div class="colum  col-6 col-sm-6">
+            <div  class="mt-2">
+              <mat-form-field class="w-100">
+                <input matInput placeholder="{{somePlaceholder}}" type="text" formControlName="documento"/>
+                <mat-error *ngIf="legalPerson.get('documento').hasError('required')">
+                  Este campo es obligatorio.
+                </mat-error>
+                <mat-error *ngIf="legalPerson.get('documento').hasError('minlength')">
+                  La longitud del texto excede el mínimo permitido.
+                </mat-error>
+                <mat-error *ngIf="legalPerson.get('documento').hasError('maxlength')">
+                  Este campo solo acepta maximo 10 caracteres
+               </mat-error>
+                <mat-error *ngIf="legalPerson.get('documento').hasError('pattern')">
+                El documento no puede contener letras.
+                </mat-error>
+              </mat-form-field>
+            </div>
+          </div>
+          <div class="colum col-6 col-sm-6">
+            <div class="mt-1" >
+              <mat-form-field class="w-100">
+                <mat-label>Tipo de proveedor</mat-label>
+                <mat-select formControlName="tipoProveedor">
+                  <mat-option disabled value="Seleccione">
+                    Seleccione un tipo de proveedor
+                  </mat-option>
+                  <mat-option value="Medico">
+                    Médico
+                  </mat-option>
+                  <mat-option value="Proveedores">
+                    Proveedor
+                  </mat-option>
+                </mat-select>
+                <mat-error *ngIf="legalPerson.get('tipoProveedor').hasError('required') ">
+                  Este campo es obligatorio.
+                </mat-error>
+              </mat-form-field>
+            </div>
+          </div>
+          <div class="colum col-6 col-sm-6">
+            <div class="mt-2">
+              <mat-form-field class="w-100">
+                <input matInput placeholder="Correo" type="text" formControlName="correo"/>
+                <mat-error *ngIf="legalPerson.get('correo').hasError('required')">
+                  Este campo es obligatorio
+                </mat-error>
+                <mat-error *ngIf="legalPerson.get('correo').hasError('pattern')">
+                  Ingrese un correo valido.
+                </mat-error>
+              </mat-form-field>
+            </div>
+          </div>
+          <br>
+
+
+          </div>
+          <div class="mt-5">
+
+            <div class="d-flex justify-content-end mr-4">
+              <button mat-raised-button class="buttonCA-second mat-raised-button" type="button" (click)="close()">CANCELAR</button>
+              <button mat-raised-button class="buttonCA primary" type="submit" [disabled]="legalPerson.invalid">GUARDAR</button>
+
+            </div>
+          </div>
+        </div>
+        <br> <br>
+      </form>
+      </mat-card>
+     </div>
+  </div>
+  <!--
+-->

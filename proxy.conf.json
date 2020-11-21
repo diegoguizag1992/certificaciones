@@ -1,0 +1,8 @@
+{
+    "/createUser*":{
+        "target": "http://52.247.56.140:8080",
+        "secure" : false,
+        "loglevel": "debug",
+        "changeOrigin": true
+    }
+}
