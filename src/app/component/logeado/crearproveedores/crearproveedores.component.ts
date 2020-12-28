@@ -2,6 +2,7 @@ import { CrearproveedorService } from './../../../service/proveedor/crearproveed
 import { Component, OnInit } from '@angular/core';
 import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
 import swal from 'sweetalert';
+import { HttpErrorResponse } from '@angular/common/http';
 
 
 
@@ -35,6 +36,7 @@ export class CrearproveedoresComponent implements OnInit {
   // tslint:disable-next-line: typedef
   ngOnInit() {
 
+
     this.filterCambioCitas();
     this.naturalPersonFilter();
 
@@ -44,13 +46,19 @@ export class CrearproveedoresComponent implements OnInit {
 
     this.legalPerson = this.fb.group({
 
-      tipoTercero: ['Persona Juridica'],
-      razonSocial: [null, [Validators.required, Validators.pattern(/^[a-zA-Z ]*$/), Validators.minLength(4)]],
-      correoAprobador: ['', [Validators.required, Validators.pattern(/^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/)]],
-      tipoDocumento: ['', [Validators.required]],
-      documento: ['', [Validators.required, Validators.minLength(6), Validators.maxLength(10), Validators.pattern(/^([0-9])*$/)]],
-      tipoProveedor: ['', [Validators.required]],
-      correo: ['', [Validators.required, Validators.pattern(/^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/)]],
+      userProviderNit: [''],
+      userProviderName: [' '],
+      userProviderLastname: [' '],
+      userProviderEmail: ['', [Validators.required, Validators.pattern(/^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/)]],
+      userProviderEmailApprover: ['', [Validators.required, Validators.pattern(/^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/)]],
+      userProviderNameCompany: ['', [Validators.required]],
+      userProviderDateCreated: [' '],
+      documentType: ['', [Validators.required]],
+      userproviderType: ['', [Validators.required]],
+      providertypeId: ['2'],
+      accountinguserId: ['2'],
+
+
     });
 
   }
@@ -58,16 +66,17 @@ export class CrearproveedoresComponent implements OnInit {
   naturalPersonFilter(): void{
 
     this.naturalPerson = this.fb.group({
-      userProviderNit: ['', [Validators.required, Validators.minLength(6), Validators.maxLength(10), Validators.pattern(/^([0-9])*$/)]],
+      userProviderNit: [''],
       userProviderName: [null, [Validators.required, Validators.pattern(/^[a-zA-Z ]*$/), Validators.minLength(3)]],
       userProviderLastname: ['', [Validators.required, Validators.pattern(/^[a-zA-Z ]*$/), Validators.minLength(3)]],
       userProviderEmail: ['', [Validators.required, Validators.pattern(/^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/)]],
       userProviderEmailApprover: ['', [Validators.required, Validators.pattern(/^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/)]],
       userProviderNameCompany: [' '],
-      userProviderDateCreated: ['19/11/2020'],
+      userProviderDateCreated: [''],
+      documentType: ['', [Validators.required]],
       userproviderType: ['', [Validators.required]],
       providertypeId: ['1'],
-      accountinguserId: ['', [Validators.required]],
+      accountinguserId: ['2', ],
     });
 
   }
@@ -77,8 +86,6 @@ export class CrearproveedoresComponent implements OnInit {
 
     if (this.legalPerson){
 
-      console.log(this.legalPerson.value);
-      console.log(this.naturalPerson.value);
 
       this.ordenService.crearLegalPerson(this.legalPerson.value).subscribe(
         (data) => {
@@ -89,14 +96,26 @@ export class CrearproveedoresComponent implements OnInit {
             icon: 'success',
           });
 
-        }, (error) => {
-           console.log(error);
-           swal({
-            title: '',
-            text: 'Nit de usuario incorrecto',
-            icon: 'error',
-          });
+        }, (error: HttpErrorResponse) => {
 
+          console.log(error);
+
+          if (error.status ===  201 ) {
+
+          swal({
+             title: '',
+             text: 'Registro realizado correctamente.',
+             icon: 'success',
+           });
+
+         } else {
+
+           swal({
+             title: '',
+             text: 'Comuniquese con el administrador',
+             icon: 'error',
+           });
+         }
         }
       );
 
@@ -119,27 +138,32 @@ export class CrearproveedoresComponent implements OnInit {
       this.ordenService.crearNaturalPerson(this.naturalPerson.value).subscribe(
         (data) => {
 
-          swal({
-            title: '',
-            text: 'Registro realizado correctamente.',
-            icon: 'success',
-          });
 
-        }, (error) => {
+        }, (error: HttpErrorResponse) => {
            console.log(error);
-           swal({
-            title: '',
-            text: 'Nit de usuario incorrecto',
-            icon: 'error',
-          });
 
+           if (error.status ===  201 ) {
+
+
+           swal({
+              title: '',
+              text: 'Registro realizado correctamente.',
+              icon: 'success',
+            });
+
+          } else {
+
+            swal({
+              title: '',
+              text: 'Comuniquese con el administrador',
+              icon: 'error',
+            });
+
+          }
         }
-      )
+      );
 
     } else {
-
-      console.log(this.legalPerson.value);
-      console.log(this.naturalPerson.value);
 
       swal({
         title: '',
@@ -176,18 +200,18 @@ export class CrearproveedoresComponent implements OnInit {
 
   }
 
-  selectDocument(document: string): void {
+  selectDocument(document: string) {
 
     if (document === 'Otro') {
 
       this.somePlaceholder = 'Otro';
-      this.legalPerson.controls.documento.setValidators(null);
-      this.naturalPerson.controls.documento.setValidators(null);
+      this.legalPerson.controls.userProviderNit.setValidators(null);
+      this.naturalPerson.controls.userProviderNit.setValidators(null);
 
     } else {
 
-      this.legalPerson.controls.documento.setValidators([Validators.required, Validators.minLength(6), Validators.maxLength(10), Validators.pattern(/^([0-9])*$/)]);
-      this.naturalPerson.controls.documento.setValidators([Validators.required, Validators.minLength(6), Validators.maxLength(10), Validators.pattern(/^([0-9])*$/)]);
+      this.legalPerson.controls.userProviderNit.setValidators([Validators.required, Validators.minLength(6), Validators.maxLength(10), Validators.pattern(/^([0-9])*$/)]);
+      this.naturalPerson.controls.userProviderNit.setValidators([Validators.required, Validators.minLength(6), Validators.maxLength(10), Validators.pattern(/^([0-9])*$/)]);
 
     }
 

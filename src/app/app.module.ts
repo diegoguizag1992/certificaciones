@@ -1,5 +1,5 @@
 import { BrowserModule } from '@angular/platform-browser';
-import { NgModule } from '@angular/core';
+import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -20,11 +20,17 @@ import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
 import { MatRadioModule } from '@angular/material/radio';
 import { HttpClientModule } from '@angular/common/http';
+import { GenerarCertificadoComponent } from './component/logeado/generar-certificado/generar-certificado.component';
+import { NgxSpinnerModule } from 'ngx-spinner';
+
+
+
 
 @NgModule({
   declarations: [
     AppComponent,
     CrearproveedoresComponent,
+    GenerarCertificadoComponent,
   ],
   imports: [
     BrowserModule,
@@ -48,8 +54,12 @@ import { HttpClientModule } from '@angular/common/http';
     MatFormFieldModule,
     MatNativeDateModule,
     MatRadioModule,
-    HttpClientModule
+    HttpClientModule,
+    NgxSpinnerModule,
 
+  ],
+  schemas: [
+    CUSTOM_ELEMENTS_SCHEMA
   ],
   providers: [],
   bootstrap: [AppComponent]
