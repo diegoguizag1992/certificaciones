@@ -2,6 +2,7 @@ import { CrearproveedorService } from './../../../service/proveedor/crearproveed
 import { Component, OnInit } from '@angular/core';
 import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
 import swal from 'sweetalert';
+import { HttpErrorResponse } from '@angular/common/http';
 
 
 
@@ -26,6 +27,8 @@ export class CrearproveedoresComponent implements OnInit {
   document = 'Seleccione';
   documento = true;
   somePlaceholder = 'Documento';
+  dataPersonaNatural: any = {};
+  date = new Date();
 
 
   constructor(private fb: FormBuilder,
@@ -34,6 +37,7 @@ export class CrearproveedoresComponent implements OnInit {
 
   // tslint:disable-next-line: typedef
   ngOnInit() {
+
 
     this.filterCambioCitas();
     this.naturalPersonFilter();
@@ -44,13 +48,19 @@ export class CrearproveedoresComponent implements OnInit {
 
     this.legalPerson = this.fb.group({
 
-      tipoTercero: ['Persona Juridica'],
-      razonSocial: [null, [Validators.required, Validators.pattern(/^[a-zA-Z ]*$/), Validators.minLength(4)]],
-      correoAprobador: ['', [Validators.required, Validators.pattern(/^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/)]],
-      tipoDocumento: ['', [Validators.required]],
-      documento: ['', [Validators.required, Validators.minLength(6), Validators.maxLength(10), Validators.pattern(/^([0-9])*$/)]],
-      tipoProveedor: ['', [Validators.required]],
-      correo: ['', [Validators.required, Validators.pattern(/^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/)]],
+      userProviderNit: [''],
+      userProviderName: [' '],
+      userProviderLastname: [' '],
+      userProviderEmail: ['', [Validators.required, Validators.pattern(/^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/)]],
+      userProviderEmailApprover: ['', [Validators.required, Validators.pattern(/^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/)]],
+      userProviderNameCompany: ['', [Validators.required]],
+      userProviderDateCreated: [' '],
+      documentType: ['', [Validators.required]],
+      userproviderType: ['', [Validators.required]],
+      providertypeId: ['2'],
+      accountinguserId: ['2'],
+
+
     });
 
   }
@@ -58,16 +68,17 @@ export class CrearproveedoresComponent implements OnInit {
   naturalPersonFilter(): void{
 
     this.naturalPerson = this.fb.group({
-      userProviderNit: ['', [Validators.required, Validators.minLength(6), Validators.maxLength(10), Validators.pattern(/^([0-9])*$/)]],
+      userProviderNit: [''],
       userProviderName: [null, [Validators.required, Validators.pattern(/^[a-zA-Z ]*$/), Validators.minLength(3)]],
       userProviderLastname: ['', [Validators.required, Validators.pattern(/^[a-zA-Z ]*$/), Validators.minLength(3)]],
       userProviderEmail: ['', [Validators.required, Validators.pattern(/^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/)]],
       userProviderEmailApprover: ['', [Validators.required, Validators.pattern(/^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/)]],
       userProviderNameCompany: [' '],
-      userProviderDateCreated: ['19/11/2020'],
+      userProviderDateCreated: [''],
+      documentType: ['', [Validators.required]],
       userproviderType: ['', [Validators.required]],
       providertypeId: ['1'],
-      accountinguserId: ['', [Validators.required]],
+      accountinguserId: ['2', ],
     });
 
   }
@@ -75,12 +86,43 @@ export class CrearproveedoresComponent implements OnInit {
 
   onSubmitLegalPerson(): void{
 
+
+    this.dataPersonaNatural.datosPJId = "0";
+    this.dataPersonaNatural.datosPJFecha = this.date;
+    this.dataPersonaNatural.datosPJTipoIdent = this.legalPerson.value.documentType;
+    this.dataPersonaNatural.datosPJResidente = "";
+    this.dataPersonaNatural.datosPJIdentificacion = this.legalPerson.value.userProviderNit;
+    this.dataPersonaNatural.datosPJDigitoVerifica = 0;
+    this.dataPersonaNatural.datosPJRazonSocial = this.legalPerson.value.userProviderNameCompany;
+    this.dataPersonaNatural.datosPJTelefono = '';
+    this.dataPersonaNatural.datosPJDireccion = '';
+    this.dataPersonaNatural.datosPJEmail = this.legalPerson.value.userProviderEmail;
+    this.dataPersonaNatural.datosPJNomRepresent = '';
+    this.dataPersonaNatural.datosPJIdentRepresent = ''
+    this.dataPersonaNatural.datosPJTeleRepresent = '';
+    this.dataPersonaNatural.datosPJEmailRepresent = this.legalPerson.value.userProviderEmailApprover;
+    this.dataPersonaNatural.datosPJOperacionesInter = '';
+    this.dataPersonaNatural.datosPJTipoContribuyente = '';
+    this.dataPersonaNatural.datosPJTipoOperacionInt = '';
+    this.dataPersonaNatural.datosPJRecursosPublicos = '';
+    this.dataPersonaNatural.datosPJActEcoNro = '';
+    this.dataPersonaNatural.datosPJActEcoTarifa = '';
+    this.dataPersonaNatural.datosPJNombreBanco = '';
+    this.dataPersonaNatural.datosPJNroCuenta = '';
+    this.dataPersonaNatural.datosPJModalidad = '';
+    this.dataPersonaNatural.datosPJCodigoAbaSwift = '';
+    this.dataPersonaNatural.datosPJPersonaPublica = '';
+    this.dataPersonaNatural.datosPJTratamiento = '';
+    this.dataPersonaNatural.datosPJCiudad = '';
+    this.dataPersonaNatural.datosPJPais = '';
+    this.dataPersonaNatural.datosPJPaisBanco = '';
+
+
+
     if (this.legalPerson){
 
-      console.log(this.legalPerson.value);
-      console.log(this.naturalPerson.value);
 
-      this.ordenService.crearLegalPerson(this.legalPerson.value).subscribe(
+      this.ordenService.crearLegalPerson(this.dataPersonaNatural).subscribe(
         (data) => {
 
           swal({
@@ -89,14 +131,42 @@ export class CrearproveedoresComponent implements OnInit {
             icon: 'success',
           });
 
-        }, (error) => {
-           console.log(error);
-           swal({
-            title: '',
-            text: 'Nit de usuario incorrecto',
-            icon: 'error',
-          });
+        }, (error: HttpErrorResponse) => {
 
+          console.log(error);
+
+          if (error.status ===  200 || error.status ===  201 || error.status ===  202 ) {
+
+          swal({
+             title: '',
+             text: 'Registro realizado correctamente.',
+             icon: 'success',
+           });
+
+           setTimeout(() => {
+            /** spinner ends after 5 seconds */
+            this.naturalPerson.reset();
+            window.location.reload();
+
+          }, 6000);
+
+         } else {
+
+           swal({
+             title: '',
+             text: 'Comuniquese con el administrador',
+             icon: 'error',
+           });
+
+           setTimeout(() => {
+            /** spinner ends after 5 seconds */
+            this.naturalPerson.reset();
+            window.location.reload();
+
+          }, 6000);
+
+
+         }
         }
       );
 
@@ -114,32 +184,82 @@ export class CrearproveedoresComponent implements OnInit {
 
   onSubmit(): void{
 
+
     if ( this.naturalPerson ) {
 
-      this.ordenService.crearNaturalPerson(this.naturalPerson.value).subscribe(
+      this.dataPersonaNatural.datosPNId = "0";
+      this.dataPersonaNatural.datosPNFecha = this.date;
+      this.dataPersonaNatural.datosPNTipoIdentifica = this.naturalPerson.value.documentType;
+      this.dataPersonaNatural.datosPNResidente = "";
+      this.dataPersonaNatural.datosPNIdentificacion = this.naturalPerson.value.userProviderNit;
+      this.dataPersonaNatural.datosPNApellidosNombres = `${this.naturalPerson.value.userProviderLastname} ${this.naturalPerson.value.userProviderName}`;
+      this.dataPersonaNatural.datosPNDireccion = '';
+      this.dataPersonaNatural.datosPNOcupacion = '';
+      this.dataPersonaNatural.datosPNTelefono = '';
+      this.dataPersonaNatural.datosPNLugarNacimiento = '';
+      this.dataPersonaNatural.datosPNFechaNacimiento = '1900-01-01';
+      this.dataPersonaNatural.datosPNEmail = this.naturalPerson.value.userProviderEmail;
+      this.dataPersonaNatural.datosPNOperacionesInter = '';
+      this.dataPersonaNatural.datosPNTipoOperacionInt = '';
+      this.dataPersonaNatural.datosPNRecursosPublicos = '';
+      this.dataPersonaNatural.datosPNResponsIVA = '';
+      this.dataPersonaNatural.datosPNNroICA = '';
+      this.dataPersonaNatural.datosPNRST = '';
+      this.dataPersonaNatural.datosPNNombreBanco = '';
+      this.dataPersonaNatural.datosPNNroCuenta = '';
+      this.dataPersonaNatural.datosPNModalidad = '';
+      this.dataPersonaNatural.datosPNPaisBanco = '';
+      this.dataPersonaNatural.datosPNCodigoAbaSwift = '';
+      this.dataPersonaNatural.datosPNPersonaPublica = '';
+      this.dataPersonaNatural.datosPNTratamiento = '';
+      this.dataPersonaNatural.datosPNDeclOrigenFondo = '';
+
+      console.log(this.dataPersonaNatural);
+
+      this.ordenService.crearNaturalPerson(this.dataPersonaNatural).subscribe(
         (data) => {
 
-          swal({
-            title: '',
-            text: 'Registro realizado correctamente.',
-            icon: 'success',
-          });
 
-        }, (error) => {
+        }, (error: HttpErrorResponse) => {
            console.log(error);
-           swal({
-            title: '',
-            text: 'Nit de usuario incorrecto',
-            icon: 'error',
-          });
 
+           if (error.status ===  200 || error.status ===  201 || error.status ===  202 ) {
+
+
+           swal({
+              title: '',
+              text: 'Registro realizado correctamente.',
+              icon: 'success',
+            });
+
+            setTimeout(() => {
+              /** spinner ends after 5 seconds */
+              alert()
+              //this.naturalPerson.reset();
+             // window.location.reload();
+
+            }, 6000);
+
+          } else {
+
+            swal({
+              title: '',
+              text: 'Comuniquese con el administrador',
+              icon: 'error',
+            });
+
+            setTimeout(() => {
+              /** spinner ends after 5 seconds */
+              // this.naturalPerson.reset();
+              // window.location.reload();
+
+            }, 6000);
+
+          }
         }
-      )
+      );
 
     } else {
-
-      console.log(this.legalPerson.value);
-      console.log(this.naturalPerson.value);
 
       swal({
         title: '',
@@ -152,6 +272,8 @@ export class CrearproveedoresComponent implements OnInit {
 
 
   close(): void{
+
+    window.location.href='/wps/portal/terceros/inicio';
 
   }
 
@@ -176,18 +298,18 @@ export class CrearproveedoresComponent implements OnInit {
 
   }
 
-  selectDocument(document: string): void {
+  selectDocument(document: string) {
 
     if (document === 'Otro') {
 
       this.somePlaceholder = 'Otro';
-      this.legalPerson.controls.documento.setValidators(null);
-      this.naturalPerson.controls.documento.setValidators(null);
+      this.legalPerson.controls.userProviderNit.setValidators(null);
+      this.naturalPerson.controls.userProviderNit.setValidators(null);
 
     } else {
 
-      this.legalPerson.controls.documento.setValidators([Validators.required, Validators.minLength(6), Validators.maxLength(10), Validators.pattern(/^([0-9])*$/)]);
-      this.naturalPerson.controls.documento.setValidators([Validators.required, Validators.minLength(6), Validators.maxLength(10), Validators.pattern(/^([0-9])*$/)]);
+      this.legalPerson.controls.userProviderNit.setValidators([Validators.required, Validators.minLength(6), Validators.maxLength(10), Validators.pattern(/^([0-9])*$/)]);
+      this.naturalPerson.controls.userProviderNit.setValidators([Validators.required, Validators.minLength(6), Validators.maxLength(10), Validators.pattern(/^([0-9])*$/)]);
 
     }
 
